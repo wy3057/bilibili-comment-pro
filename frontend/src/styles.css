@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap");
+
+:root {
+  color: #1d1c1a;
+  background:
+    radial-gradient(circle at top left, rgba(232, 93, 31, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(23, 112, 156, 0.16), transparent 24%),
+    linear-gradient(180deg, #f7f2ea 0%, #f2ece2 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  font-family: "IBM Plex Sans", "Noto Sans SC", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.fullscreen-center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  padding: 24px;
+  gap: 24px;
+}
+
+.login-hero,
+.login-card {
+  border-radius: 24px;
+}
+
+.login-hero {
+  padding: 48px;
+  background:
+    linear-gradient(135deg, rgba(28, 38, 61, 0.95), rgba(232, 93, 31, 0.82)),
+    linear-gradient(180deg, #111, #333);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-hero::before,
+.login-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(2px);
+}
+
+.login-hero::before {
+  width: 320px;
+  height: 320px;
+  right: -90px;
+  top: -80px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.login-hero::after {
+  width: 220px;
+  height: 220px;
+  left: -70px;
+  bottom: -60px;
+  background: rgba(255, 244, 196, 0.14);
+}
+
+.login-hero .ant-typography,
+.login-hero .ant-typography.ant-typography-secondary {
+  color: #fff;
+  max-width: 640px;
+}
+
+.login-card {
+  align-self: center;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.app-sider {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(29, 28, 26, 0.08);
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 18px 18px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #e85d1f, #9e2a2b);
+}
+
+.brand-title {
+  margin: 0 !important;
+}
+
+.brand-subtitle {
+  color: rgba(29, 28, 26, 0.62);
+}
+
+.app-header {
+  background: rgba(255, 255, 255, 0.56) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(29, 28, 26, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: auto;
+  min-height: 76px;
+  padding: 12px 24px !important;
+}
+
+.app-content {
+  padding: 24px;
+}
+
+.ant-card {
+  border-radius: 20px;
+  box-shadow: 0 18px 48px rgba(33, 25, 14, 0.06);
+}
+
+@media (max-width: 960px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .login-hero {
+    min-height: 280px;
+  }
+}
+

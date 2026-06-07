@@ -1,0 +1,143 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bilibili_comment
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bilibili_comment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  douyin-personal-helper:
+    build:
+      context: .
+      dockerfile: douyin-personal-helper/Dockerfile
+    environment:
+      HELPER_PORT: 4300
+      PLAYWRIGHT_HEADLESS: "true"
+      HELPER_SESSION_TTL_MS: 600000
+    expose:
+      - "4300"
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/bilibili_comment
+      REDIS_URL: redis://redis:6379/0
+      FRONTEND_ORIGIN: http://localhost:4173
+      DOUYIN_PERSONAL_HELPER_BASE_URL: http://douyin-personal-helper:4300
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      douyin-personal-helper:
+        condition: service_started
+
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A app.workers.celery_app.celery_app worker --loglevel=info
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/bilibili_comment
+      REDIS_URL: redis://redis:6379/0
+      DOUYIN_PERSONAL_HELPER_BASE_URL: http://douyin-personal-helper:4300
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      douyin-personal-helper:
+        condition: service_started
+
+  beat:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A app.workers.celery_app.celery_app beat --loglevel=info
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/bilibili_comment
+      REDIS_URL: redis://redis:6379/0
+      DOUYIN_PERSONAL_HELPER_BASE_URL: http://douyin-personal-helper:4300
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      douyin-personal-helper:
+        condition: service_started
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api
+      VITE_WS_BASE_URL: ws://localhost:8000/api/ws
+    ports:
+      - "4173:4173"
+    depends_on:
+      - api
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
+  loki:
+    image: grafana/loki:3.0.0
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./deploy/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./deploy/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./deploy/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  postgres-data:
+  redis-data:
+  grafana-data:
