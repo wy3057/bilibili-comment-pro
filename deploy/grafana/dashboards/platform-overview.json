@@ -1,0 +1,148 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 0,
+  "id": null,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "expr": "sum(http_requests_total)",
+          "refId": "A"
+        }
+      ],
+      "title": "HTTP Requests Total",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "sum(http_active_requests)",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Requests",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 8 },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, path))",
+          "legendFormat": "{{path}}",
+          "refId": "A"
+        }
+      ],
+      "title": "P95 Request Duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 17 },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "sum(bili_comments_discovered_total)",
+          "refId": "A"
+        }
+      ],
+      "title": "Comments Discovered",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 17 },
+      "id": 5,
+      "targets": [
+        {
+          "expr": "sum(bili_reply_actions_total{status=\"sent\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Replies Sent",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 17 },
+      "id": 6,
+      "targets": [
+        {
+          "expr": "sum(bili_notification_deliveries_total{status=\"failed\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Notification Failures",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 25 },
+      "id": 7,
+      "targets": [
+        {
+          "expr": "sum(rate(bili_task_runs_total[5m])) by (task_name, status)",
+          "legendFormat": "{{task_name}} {{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Task Run Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 34 },
+      "id": 8,
+      "targets": [
+        {
+          "expr": "sum(bili_websocket_connections)",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Websocket Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 34 },
+      "id": 9,
+      "targets": [
+        {
+          "expr": "sum(rate(bili_target_polls_total[5m])) by (status)",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Target Poll Outcomes",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["bilibili", "comments"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "",
+  "title": "Platform Overview",
+  "version": 2
+}

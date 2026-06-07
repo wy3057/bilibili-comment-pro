@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: "bilibili-comment-platform"
+    orgId: 1
+    folder: "Bilibili Comment Platform"
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
+
